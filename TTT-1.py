@@ -1,11 +1,22 @@
 """Game Tic Toc Toe"""
 
+"""Fields numbering
+       A   B   C  
+      ╔═══╤═══╤═══╗
+    1 ║ O │ 3 │ 6 ║
+      ╟───┼───┼───╢
+    2 ║ 1 │ 4 │ 7 ║
+      ╟───┼───┼───╢
+    3 ║ 2 │ 5 │ 8 ║
+      ╚═══╧═══╧═══╝
+"""
+
 from random import choice
 
 while True:
     state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
-    temp_state = ["", "", "", "", "", "", "", "", ""]
-    who = ""
+    who = ""  # Contain info about recent player
+    response_no = 0  # Counter of computer moves
 
 
     def display(state, move):  # Display game result
@@ -93,27 +104,46 @@ while True:
 
 
     def response(state):  # Computer move
-        empty_cor = empty_corner(state)
-        if state[4] == " ":  # First move in the central field
+        global response_no
+        response_no += 1  # Counts computer moves
+        empty_cor = empty_corner(state)  # Create list of empty corners
+        if state[4] == " ":  # First move always in the central field
             state[4] = "O"
-        elif empty_cor:  # Check if empty_cor has elements
-            state[choice(empty_cor)] = "O"  # Select random corner from empty_corner list
+            print(1)
+        elif response_no == 2 and empty_cor:  # In second move...
+            state[choice(empty_cor)] = "O"  # ...select random corner from empty_corner list
+            print(2)
+        else:
+            block = state[potential_win(state)]
+            print(block)
         return state, "O"
 
 
     def potential_win(state):
-        for line in [[state[0], state[1], state[2]],
-                     [state[3], state[4], state[5]],
-                     [state[6], state[7], state[8]],
-                     [state[0], state[3], state[6]],
-                     [state[1], state[4], state[7]],
-                     [state[2], state[5], state[8]],
-                     [state[0], state[4], state[8]],
-                     [state[2], state[4], state[6]], ]:
 
-            if line.count("X") == 2 and line.count(" ") == 1:
-                print(line.index(" "))
+        hazard_fields = []
+        for line in [[0, 1, 2],  # Iterate through indexes of fields representing potentially winning lines
+                     [3, 4, 5],
+                     [6, 7, 8],
+                     [0, 3, 6],
+                     [1, 4, 7],
+                     [2, 5, 8],
+                     [0, 4, 8],
+                     [2, 4, 6], ]:
 
+            # ↓ Check if line has 2 'X' and 1 'O' ↓
+            if [state[line[0]], state[line[1]], state[line[2]]].count("X") == 2 and \
+                    [state[line[0]], state[line[1]], state[line[2]]].count(" ") == 1:
+
+                # ↓↓  Save number of empty field  ↓↓
+                hazard_fields.append(line[[state[line[0]], state[line[1]], state[line[2]]].index(" ")])
+
+        # ↓↓  Return number of empty field appearing in 2 lines ↓↓
+        if len(hazard_fields) == 2 and hazard_fields[0] == hazard_fields[1]:
+            return hazard_fields[0]
+
+        elif len(hazard_fields) == 1:  # Return number of empty field in single line
+            return hazard_fields[0]
 
 
     print("═" * 35, "\n     This is TIC TOC TOE game!     \n" + "═" * 35, "\n")
@@ -123,15 +153,17 @@ while True:
 
     while True:  # Single game sequence
         inp = user_inp()  # Collect user move
+
         state, who = insert(state, "X", inp)  # Insert user move to state array
         display(state, who)  # Display board after user move
-        potential_win(state)
-        win = check_win(state, who)  # Check if there is a win
-        if win == "X":  # message if there is user win
+        win = check_win(state, who)  # Check if there is user win
+        if win == "X":  # Message if there is user win
             print("You won with a very sophisticated AI! Congratulations!!\n"
                   "You are going to loose next time.")
             break
+
         state, who = response(state)
+        potential_win(state)
         display(state, who)
 
         win = check_win(state, who)
