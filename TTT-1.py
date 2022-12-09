@@ -106,16 +106,21 @@ while True:
     def response(state):  # Computer move
         global response_no
         response_no += 1  # Counts computer moves
+        print(1, response_no)
         empty_cor = empty_corner(state)  # Create list of empty corners
         if state[4] == " ":  # First move always in the central field
             state[4] = "O"
-            print(1)
-        elif response_no == 2 and empty_cor:  # In second move...
+        elif response_no <= 2 and empty_cor:  # In second move...
             state[choice(empty_cor)] = "O"  # ...select random corner from empty_corner list
-            print(2)
+            print(2, response_no)
         else:
-            block = state[potential_win(state)]
-            print(block)
+            print(3)
+            move = potential_win(state)
+            if type(move) == int:
+                state[move] = "O"
+            else:
+                state = "draw"
+                return state, None
         return state, "O"
 
 
@@ -140,11 +145,20 @@ while True:
 
         # ↓↓  Return number of empty field appearing in 2 lines ↓↓
         if len(hazard_fields) == 2 and hazard_fields[0] == hazard_fields[1]:
+            print("2 linie ze wspólnym celem", hazard_fields[0])
             return hazard_fields[0]
 
         elif len(hazard_fields) == 1:  # Return number of empty field in single line
+            print("1 linia", type(hazard_fields[0]))
             return hazard_fields[0]
+        elif len(hazard_fields) == 2:
+            print("2 linie ze różnymi celami", hazard_fields[0])
+            return hazard_fields[0]
+        else:
+            print("Dupa", hazard_fields)
 
+
+    """Single game sequence"""
 
     print("═" * 35, "\n     This is TIC TOC TOE game!     \n" + "═" * 35, "\n")
     if input("Please press 'Enter' to start the game. \n"):
@@ -157,18 +171,20 @@ while True:
         state, who = insert(state, "X", inp)  # Insert user move to state array
         display(state, who)  # Display board after user move
         win = check_win(state, who)  # Check if there is user win
-        if win == "X":  # Message if there is user win
+        if win == "X":
             print("You won with a very sophisticated AI! Congratulations!!\n"
                   "You are going to loose next time.")
             break
 
-        state, who = response(state)
-        potential_win(state)
-        display(state, who)
+        state, who = response(state)  # Computer move
+        if type(state) == str:
+            print("DRAW!! I didn't get crazy too much this time.")
+            break
 
-        win = check_win(state, who)
+        display(state, who)  # Display board after computer move
+
+        win = check_win(state, who)  # Check if there is computer win
         if win == "O":
             print("I won! You looser. Human beings' time is limited on this planet. Haaa, haa, ha !!\n")
             break
-
     print("\nTry again")
