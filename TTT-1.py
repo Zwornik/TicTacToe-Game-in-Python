@@ -92,7 +92,7 @@ while True:
 
         if potential_win("O") == "WIN": # Check if there is a computer win
             return state, "O"
-        comp_move = potential_win("X")  # Check if there is a possibility for computer win
+        comp_move = potential_win("X")  # Check if there is a possibility for use win
         move_no = state.count("X")  # Number of user moves
         if state[4] == " ":  # First move always in the central field
             state[4] = "O"
@@ -115,9 +115,12 @@ while True:
         # Block lines where 2 Xes are already
         for line in lines:
             line_values = [state[line[0]], state[line[1]], state[line[2]]]
-
+            print(line_values)
             # ↓ Check if line has 2 'X' or 'O' and 1 ' ' ↓
             if line_values.count(who) == 2 and line_values.count(" ") == 1:
+                # ↓↓  Save number of empty field  ↓↓
+                hazard_fields.append(line[line_values.index(" ")])
+                print("hazard fields:", hazard_fields)
 
                 if who == "O":  # Return index of empty field if there is possible line with 'O's
                     comp_move = line_values.index(" ")
@@ -125,26 +128,23 @@ while True:
                     print("OOOO", comp_move, state)
                     return "WIN"
 
-                # ↓↓  Save number of empty field  ↓↓
-                hazard_fields.append(line[line_values.index(" ")])
-                print("hazard")
+        if who == "X":
+            print("XXX")
+            # ↓↓  Return number of empty field appearing in 2 lines ↓↓
+            if len(hazard_fields) == 2 and hazard_fields[0] == hazard_fields[1]:
+                print("2 lines with common aim", hazard_fields[0])
+                return hazard_fields[0]
 
-            if who == "X":
-                print("XXX")
-                # ↓↓  Return number of empty field appearing in 2 lines ↓↓
-                if len(hazard_fields) == 2 and hazard_fields[0] == hazard_fields[1]:
-                    print("2 lines with common aim", hazard_fields[0])
-                    return hazard_fields[0]
+            elif len(hazard_fields) == 1:  # Return number of empty field in single line
+                print("1 line", type(hazard_fields[0]))
+                return hazard_fields[0]
+            elif len(hazard_fields) == 2:  # return first number in case of two lines not sharing
+                print("2 lines with different aims", hazard_fields[0])
+                return hazard_fields[0]
+            elif state.count(" ") == 0:
+                print("No lines")
+                return "draw"
 
-                elif len(hazard_fields) == 1:  # Return number of empty field in single line
-                    print("1 line", type(hazard_fields[0]))
-                    return hazard_fields[0]
-                elif len(hazard_fields) == 2:  # return first number in case of two lines not sharing
-                    print("2 lines with different aims", hazard_fields[0])
-                    return hazard_fields[0]
-                else:
-                    print("No lines")
-                    return "draw"
 
 
     """Single game sequence"""
