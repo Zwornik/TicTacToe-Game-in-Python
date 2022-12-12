@@ -15,6 +15,7 @@
 """
 
 from random import choice
+name = "Aneta"
 field_coords = ("A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of files where index is field number
 lines = ((0, 1, 2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6))  # All possible lines
 
@@ -43,10 +44,14 @@ while True:
         print("      ╚═══╧═══╧═══╝\n")
 
 
-    def check_win(win):  # Check if there is a win (row of 3)
+    def check_win(win):  # Check if there is a win (row of 3) or draw.
+
+        if state.count(" ") == 0:  # Check if there is a 'draw'.
+            return "draw"
+
         for i in lines:  # check each possible line
             if state[i[0]] == state[i[1]] == state[i[2]] in ("X", "O"):  # Check if line has 3 equal values
-                print("'{}' WIN!!!".format(win))
+                print("─"*34, " '{0}' WIN!!! ".format(win), "─"*33)
                 return win
 
 
@@ -85,37 +90,31 @@ while True:
 
 
     def empty_corner(state):  # Return list with empty corners
-        corners = (0,2,6,8)
+        corners = (0,8,2,6)
         empty_cor = []
         for i in corners:
             if state[i] == " ":
                 empty_cor.append(i)
         return empty_cor
-        # elif move_X_no == 1 and move_O_no == 0 and state[4] == " ":  # First move in central field if user started game
-        #     state[4] = "O"
-
-        return state, "O"
 
 
     def response(state):  # Computer move
 
-        empty_cor = empty_corner(state)  # Create list of empty corners
+        o_move= potential_win("O")  # Contains winning computr move
 
-        if potential_win("O") == "WIN": # Check if there is a computer win
-            pass
-        comp_move = potential_win("X")  # Check if there is a possibility for use win
+        if type(o_move) == int: # Check if there is a computer win
+            state[o_move] = "O"
+            return state, "O"
+
+        empty_cor = empty_corner(state)  # Create list of empty corners
+        x_move = potential_win("X")  # Check if there is a possibility for use win
         move_X_no = state.count("X")  # Number of user moves
         move_O_no = state.count("O")  # Number of computer moves
 
-        if move_X_no >= 2 and type(comp_move) == int:  # If there is a risky line blok it
-            state[comp_move] = "O"
-        elif empty_cor:  # First move in any corner
+        if move_X_no >= 2 and type(x_move) == int:  # If there is a risky line blok it
+            state[x_move] = "O"
+        elif empty_cor:  # Firsto_movein any corner
             state[choice(empty_cor)] = "O"  # ...select random corner from empty_corner list
-            print(2, response_no)
-        else:
-            print(3)
-            if comp_move == "draw":
-                return "draw", None
 
         return state, "O"
 
@@ -127,33 +126,19 @@ while True:
         # Block lines where 2 Xes are already
         for line in lines:
             line_values = [state[line[0]], state[line[1]], state[line[2]]]
+
             # ↓ Check if line has 2 'X' or 'O' and 1 ' ' ↓
             if line_values.count(who) == 2 and line_values.count(" ") == 1:
                 # ↓↓  Save number of empty field  ↓↓
                 potential_fields.append(line[line_values.index(" ")])
-                print("potential fields:", potential_fields)
 
-                if who == "O" and len(potential_fields) > 0:  # Check if there is possible line with 'O's
-                    state[potential_fields[0]] = "O"
-                    print("OOOO", state)
-                    return "WIN"
-
-        if who == "X":
-            print("XXX")
-            if len(potential_fields) > 0:  # Return number of empty field in single line
-                print("1 line", type(potential_fields[0]))
-                return potential_fields[0]
-            # elif len(potential_fields) == 2:  # return first number in case of two lines not sharing
-            #     print("2 lines with different aims", potential_fields[0])
-            #     return potential_fields[0]
-            elif state.count(" ") == 0:
-                print("No lines")
-                return "draw"
+        if len(potential_fields) > 0:  # Return first empty field if it exist
+            return potential_fields[0]
 
 
     """Single game sequence"""
 
-    print("\n", "═" * 35, "\n     This is TIC TOC TOE game!     \n" + "═" * 35, "\n")
+    print("\n"+"═" * 35, "\n     This is TIC TOC TOE game!     \n" + "═" * 35, "\n")
 
     start = who_start()
 
@@ -163,30 +148,33 @@ while True:
     else:
         display(state, "")  # Display empty board
 
-
     while True:  # Single game sequence
 
         inp = user_inp()  # Collect user move
 
-        state, who = insert("X", inp)  # Insert user move to state array
+        state, who = insert("X", inp)  # Insert usero_moveto state array
         display(state, who)  # Display board after user move
         win = check_win(who)  # Check if there is user win
         if win == "X":
             print("You won with a very sophisticated Artificial Intelligence! Congratulations!!\n"
                   "You are going to loose next time.")
             break
+        elif win == "draw":
+            print("─"*8, "DRAW!! {0}, really?! You can not even afford to bit a computer?".format(name), "─"*8)
+            break
 
         state, who = response(state)  # Computer move
-        if type(state) == str:
-            print("DRAW!! I didn't get crazy too much this time.")
-            break
 
         display(state, who)  # Display board after computer move
 
         win = check_win(who)  # Check if there is computer win
         if win == "O":
-            print("I WON! You looser. Human beings' time is limited on this planet. Haaa, haa, ha !!\n")
+            print("I WON! {0} You looser. Human beings' time is limited on this planet. Haaa haaa!!\n".format(name))
             break
+        elif win == "draw":
+            print("─"*8, "DRAW!! I didn't get crazy too much this time.", "─"*8)
+            break
+
     print("\nTry again")
 
 
