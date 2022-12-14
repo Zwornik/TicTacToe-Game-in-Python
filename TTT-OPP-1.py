@@ -22,6 +22,8 @@ lines = ((0, 1, 2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6
 while True:
     state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
     who = ""  # Contain info about recent player
+    response_no = 0  # Counter of computer moves
+
 
     def display(state, who):  # Display game result
 
