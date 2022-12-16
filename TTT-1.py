@@ -1,4 +1,4 @@
-"""Game Tic Toc Toe"""
+"""Game Tic Tac Toe"""
 
 """Fields numbering
        A   B   C  
@@ -15,15 +15,13 @@
 """
 
 from random import choice
-name = "Aneta"
+name = input("Please enter your name. ").upper()
 field_coords = ("A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of files where index is field number
 lines = ((0, 1, 2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6))  # All possible lines
 
 while True:
     state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
     who = ""  # Contain info about recent player
-    response_no = 0  # Counter of computer moves
-
 
     def display(state, who):  # Display game result
 
@@ -138,7 +136,7 @@ while True:
 
     """Single game sequence"""
 
-    print("\n"+"═" * 35, "\n     This is TIC TOC TOE game!     \n" + "═" * 35, "\n")
+    print("\n"+"═" * 35, "\n     This is TIC TAC TOE game!     \n" + "═" * 35, "\n")
 
     start = who_start()
 
