@@ -1,6 +1,6 @@
 from random import choice
 
-"""Game Tic Tac Toe"""
+"""GAME TIC TAC TOE"""
 
 """Fields numbering
        A   B   C  
@@ -21,14 +21,14 @@ who = "X"  # Contain info about recent player
 
 class Display:
 
-    def __init__(self, who_in=" "):
-        self.who = who_in  # Recent layer figure "X" or "O"
+    def __init__(self, who_in):
         self.state = Board.state
+        self.who = who_in
 
         if self.who == "X":  # Select message to display
-            message = "◀   This is your move. ( X )"
+            message = "◀◀◀  ( X )  This is your move. "
         elif self.who == "O":
-            message = "◀◀◀◀◀◀   This is my move. ( O )"
+            message = "◀◀◀  ( O )  This is my move."
         else:
             message = "◀◀◀  This is our empty board"
 
@@ -41,7 +41,7 @@ class Display:
         print("    3 ║ {0[2]:^{1}} │ {0[5]:^{1}} │ {0[8]:^{1}} ║".format(self.state, 1))
         print("      ╚═══╧═══╧═══╝\n")
 
-    def win_display(self, name):
+    def win_message(self, name):  # Display a message about the winner
         if self.who == "X":
             print("You won with a very sophisticated Artificial Intelligence! Congratulations!!\n"
                   "You are going to loose next time.")
@@ -50,7 +50,7 @@ class Display:
             print("I WON! {0} You looser. Human beings' time is limited on this planet. Haaa haaa!!\n".format(name))
 
         elif self.who == 'draw':
-            print("─"*8, "DRAW!! {0}, really?! You can not even afford to bit a computer?".format(name), "─"*8)
+            print("─" * 8, "DRAW!! {0}, really?! You can not even afford to bit a computer?".format(name), "─" * 8)
 
 
 class User_inp:
@@ -95,7 +95,7 @@ class Board:
             (0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8),
             (2, 4, 6))  # All possible lines
 
-    def __init__(self,):
+    def __init__(self, ):
         pass
 
     def check_win(self):  # Check if there is a win (row of 3) or draw.
@@ -134,7 +134,6 @@ class Board:
         Board.state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
 
 
-
 class Response:
 
     @staticmethod
@@ -153,8 +152,12 @@ class Response:
 
         if move_X_no >= 2 and type(x_move) == int:  # If there is a risky line blok it
             Board.state[x_move] = "O"
+        # elif move_X_no >= 2 and Board.state[4] == " ":
+        #     Board.state[4] = "O"
         elif empty_cor:  # First "O"'s move in any corner
             Board.state[choice(empty_cor)] = "O"  # ...select random corner from empty_corner list
+        elif state.index(" "):
+            Board.state[state.index(" ")] = "O"
 
     @staticmethod
     def potential_win(who_in):
@@ -173,19 +176,25 @@ class Response:
                 potential_fields.append(line[line_values.index(" ")])
 
         if len(potential_fields) > 0:  # Return first empty field if it exists
+            print(potential_fields)
             return potential_fields[0]  # Field index
 
 
-"""Initialisation"""
+"""INITIALISATION"""
+
 user_inp = User_inp()  # create instance of user input
 user_name = (user_inp.collect_name()).upper()
+game_counter = 0  # Keeps no. of games
+score = [0, 0]  # Keeps score of all rounds ["X", "O"]
+game_starts = [0, 0]  # No. of rounds started by each player ["X", "O"]
+"""WHOLE GAME SEQUENCE"""
 
-"""Whole game sequence"""
 while True:
     board = Board()  # create instance of board
-    display = Display("X")
+    display = Display("")
+    game_counter += 1
 
-    """Single game sequence"""
+    """SINGLE GAME SEQUENCE"""
 
     print("\n" + "═" * 35, "\n     This is TIC TAC TOE game!     \n" + "═" * 35, "\n")
 
@@ -194,31 +203,45 @@ while True:
     if start == "O":
         Response.response()  # First move by computer
         Display("O")  # Display computer move
+        game_starts[1] += 1
     else:
-        Display("")  # Display empty board
+        game_starts[0] += 1
+
 
     while True:  # Single game sequence
 
+        """USER MOVE"""
         inp = user_inp.user_move()  # Collect user move e.g. "A2"
 
         board.insert(inp, "X")  # Insert user move to state array
         display = Display("X")
 
         win = board.check_win()
-        if win in ("X", "O"):
-            display.win_display("")
+        print("WIN", win)
+        if win:
+            display.win_message(user_name)
             board.reset_board()
+            if win == "X":
+                score[0] += 1
             break
 
+        """COMP MOVE"""
         Response.response()  # Computer move
         display = Display("O")
 
         win = board.check_win()
-        if win in ("X", "O"):
-            display.win_display(user_name)
+        if win:
+            display.win_message("")
             board.reset_board()
+            if win == "O":
+                score[1] += 1
             break
 
-    print("\nTry again")
+    print("\nTry again\n")
+    print("We have played {} rounds and the current result is:".format(game_counter))
+    print("           {0:^15}  {1:^15}".format(user_name, "COMPUTER"))
+    print("Wins       {0:^15}  {1:^15}".format(score[0], score[1]))
+    print("Starts game{0:^15}  {1:^15}\n".format(game_starts[0], game_starts[1]))
+
     while not input("Press Enter to continue."):
         break

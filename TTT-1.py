@@ -1,4 +1,6 @@
-"""Game Tic Tac Toe"""
+from random import choice
+
+"""GAME TIC TAC TOE"""
 
 """Fields numbering
        A   B   C  
@@ -14,10 +16,13 @@
       'O' - Computer figure
 """
 
-from random import choice
+
 name = input("Please enter your name. ").upper()
 field_coords = ("A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of files where index is field number
 lines = ((0, 1, 2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6))  # All possible lines
+
+
+"""WHOLE GAME SEQUENCE"""
 
 while True:
     state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
@@ -133,7 +138,7 @@ while True:
             return potential_fields[0]
 
 
-    """Single game sequence"""
+    """SINGLE GAME SEQUENCE"""
 
     print("\n"+"═" * 35, "\n     This is TIC TAC TOE game!     \n" + "═" * 35, "\n")
 
@@ -147,6 +152,8 @@ while True:
 
     while True:  # Single game sequence
 
+        """USER MOVE"""
+
         inp = user_inp()  # Collect user move
 
         state, who = insert("X", inp)  # Insert user move to state array
@@ -159,6 +166,8 @@ while True:
         elif win == "draw":
             print("─"*8, "DRAW!! {0}, really?! You can not even afford to bit a computer?".format(name), "─"*8)
             break
+
+        """COMP MOVE"""
 
         state, who = response(state)  # Computer move
 
