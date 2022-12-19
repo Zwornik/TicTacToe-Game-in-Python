@@ -88,14 +88,15 @@ class User_inp:
 
 class Board:
     state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
+    print("board")
     field_coords = (
             "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of fields where index is field number
     lines = (
             (0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8),
             (2, 4, 6))  # All possible lines
 
-    def __init__(self, who_in):
-        self.who = who_in
+    def __init__(self,):
+        pass
 
     def check_win(self):  # Check if there is a win (row of 3) or draw.
 
@@ -108,8 +109,8 @@ class Board:
                 print("─" * 34, " '{0}' WIN!!! ".format(Board.state[line[0]]), "─" * 33)
                 return Board.state[line[0]]  # Winner figure "X" or "O"
 
-    def insert(self, coodrs):  # Insert figure to a filed
-        Board.state[self.field_coords.index(coodrs)] = self.who
+    def insert(self, coodrs, who):  # Insert figure to a filed
+        Board.state[self.field_coords.index(coodrs)] = who
 
     def check_field(self, coodrs):  # Return value of selected field
         field = Board.state[self.field_coords.index(coodrs)]
@@ -127,6 +128,11 @@ class Board:
     @staticmethod
     def current_state():
         return Board.state  # List of field states
+
+    @staticmethod
+    def reset_board():
+        Board.state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
+
 
 
 class Response:
@@ -176,7 +182,7 @@ user_name = (user_inp.collect_name()).upper()
 
 """Whole game sequence"""
 while True:
-    board = Board("O")  # create instance of board
+    board = Board()  # create instance of board
     display = Display("X")
 
     """Single game sequence"""
@@ -187,20 +193,21 @@ while True:
 
     if start == "O":
         Response.response()  # First move by computer
-        Display("O")
+        Display("O")  # Display computer move
     else:
         Display("")  # Display empty board
 
     while True:  # Single game sequence
 
-        inp = user_inp.user_move()  # Collect user move
+        inp = user_inp.user_move()  # Collect user move e.g. "A2"
 
-        board.insert(inp)  # Insert user move to state array
+        board.insert(inp, "X")  # Insert user move to state array
         display = Display("X")
 
         win = board.check_win()
         if win in ("X", "O"):
             display.win_display("")
+            board.reset_board()
             break
 
         Response.response()  # Computer move
@@ -209,6 +216,9 @@ while True:
         win = board.check_win()
         if win in ("X", "O"):
             display.win_display(user_name)
+            board.reset_board()
             break
 
     print("\nTry again")
+    while not input("Press Enter to continue."):
+        break
