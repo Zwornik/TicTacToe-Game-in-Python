@@ -17,104 +17,65 @@ from random import choice
 """
 
 who = "X"  # Contain info about recent player
-response_no = 0  # Computer moves counter
 
 
 class Display:
 
     def __init__(self, who_in=" "):
+        self.who = who_in  # Recent layer figure "X" or "O"
         self.state = Board.state
-        self.who = who_in
 
-    def show(self):
-        if self.who == "X":
-            self.who = "◀   This is your move. ( X )"
+        if self.who == "X":  # Select message to display
+            message = "◀   This is your move. ( X )"
         elif self.who == "O":
-            self.who = "◀◀◀◀◀◀   This is my move. ( O )"
+            message = "◀◀◀◀◀◀   This is my move. ( O )"
         else:
-            self.who = "◀◀◀  This is our empty board"
+            message = "◀◀◀  This is our empty board"
 
         print("        A   B   C  ".format(self.state))
         print("      ╔═══╤═══╤═══╗")
         print("    1 ║ {0[0]:^{1}} │ {0[3]:^{1}} │ {0[6]:^{1}} ║".format(self.state, 1))
         print("      ╟───┼───┼───╢")
-        print("    2 ║ {0[1]:^{1}} │ {0[4]:^{1}} │ {0[7]:^{1}} ║   {2}".format(self.state, 1, self.who))
+        print("    2 ║ {0[1]:^{1}} │ {0[4]:^{1}} │ {0[7]:^{1}} ║   {2}".format(self.state, 1, message))
         print("      ╟───┼───┼───╢")
         print("    3 ║ {0[2]:^{1}} │ {0[5]:^{1}} │ {0[8]:^{1}} ║".format(self.state, 1))
         print("      ╚═══╧═══╧═══╝\n")
 
+    def win_display(self, name):
+        if self.who == "X":
+            print("You won with a very sophisticated Artificial Intelligence! Congratulations!!\n"
+                  "You are going to loose next time.")
 
-class Board:
-    state = [" ", "X", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
-    field_coords = (
-    "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of files where index is field number
-    lines = (
-    (0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8), (2, 4, 6))  # All possible lines
+        elif self.who == "O":
+            print("I WON! {0} You looser. Human beings' time is limited on this planet. Haaa haaa!!\n".format(name))
 
-    def __init__(self, who_in):
-        self.state = Board.state
-        self.who = who_in
-
-    def check_win(self):  # Check if there is a win (row of 3) or draw.
-
-        if self.state.count(" ") == 0:  # Check if there is a 'draw'.
-            return "draw"
-
-        for i in self.lines:  # check each possible line
-            if self.state[i[0]] == self.state[i[1]] == self.state[i[2]] in ("X", "O"):  # Check if line has 3 equal values
-                print("─" * 34, " '{0}' WIN!!! ".format(self.who), "─" * 33)
-                return self.who
-
-    def insert(self, coodrs):  # Insert input to a filed
-        self.state[self.field_coords.index(coodrs)] = self.who
-        return self.state, self.who
-
-    def check_field(self, coodrs):  # Return value of selected field
-        field = self.state[self.field_coords.index(coodrs)]
-        return field
-
-    def empty_corner(self):  # Return list with empty corners
-        corners = (0,8,2,6)
-        empty_cor = []
-        for i in corners:
-            if self.state[i] == " ":
-                empty_cor.append(i)
-        return empty_cor
-
-    def current_state(self):
-        return self.state
-    dupa = 2
-
-board = Board(who)
-disp = Display(board.current_state())
-
-print(board.check_field("A2"))
-print(board.empty_corner())
-board = Board("O")
-disp.show()
-board.insert("C1")
-disp.show()
-print(board.current_state())
+        elif self.who == 'draw':
+            print("─"*8, "DRAW!! {0}, really?! You can not even afford to bit a computer?".format(name), "─"*8)
 
 
 class User_inp:
 
-    def collect_name(self):
+    @staticmethod
+    def collect_name():
         name = input("Please enter your name. ").upper()
+        return name
 
-    def user_move(self):  # Collect user move
+    @staticmethod
+    def user_move():  # Collect user move
         while True:
             move = ""
             move = input("Type field coordinates to put your 'X' (e.g. 'A2') ")
             move = move.upper()
-            if len(move) != 2 or move[0] not in ("A", "B", "C") or move[1] not in ("1", "2", "3"):  # Check if format is OK
+            if len(move) != 2 or move[0] not in ("A", "B", "C") or move[1] not in (
+                    "1", "2", "3"):  # Check if format is OK
                 print("WRONG INPUT. TRY AGAIN.")
-            elif check_field(move) != " ":  # Check if selected field is empty
-                print("There is '{}' in this field. Please try again.".format(check_field(move)))
+            elif board.check_field(move) != " ":  # Check if selected field is empty
+                print("There is '{}' in this field. Please try again.".format(board.check_field(move)))
             else:
-                return move
+                return move  # e.g "A2"
 
-    def who_start(self):  # Make user to chose if he wants to start
+    @staticmethod
+    def who_start():  # Make user to chose if he wants to start
         while True:
             start = ""
             start = input("I will play with 'O' figure and you with 'X'.\n"
@@ -122,96 +83,132 @@ class User_inp:
             if start not in ("O", "X"):
                 print("WRONG INPUT. TRY AGAIN.")
             else:
-                return start
+                return start  # "O" or "X"
+
+
+class Board:
+    state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
+    field_coords = (
+            "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of fields where index is field number
+    lines = (
+            (0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8),
+            (2, 4, 6))  # All possible lines
+
+    def __init__(self, who_in):
+        self.who = who_in
+
+    def check_win(self):  # Check if there is a win (row of 3) or draw.
+
+        if Board.state.count(" ") == 0:  # Check if there is a 'draw'.
+            return "draw"
+
+        for line in self.lines:  # check each possible line
+            if Board.state[line[0]] == Board.state[line[1]] == Board.state[line[2]] in (
+                    "X", "O"):  # Check if line has 3 equal values
+                print("─" * 34, " '{0}' WIN!!! ".format(Board.state[line[0]]), "─" * 33)
+                return Board.state[line[0]]  # Winner figure "X" or "O"
+
+    def insert(self, coodrs):  # Insert figure to a filed
+        Board.state[self.field_coords.index(coodrs)] = self.who
+
+    def check_field(self, coodrs):  # Return value of selected field
+        field = Board.state[self.field_coords.index(coodrs)]
+        return field  # "X" or "O" or " "
+
+    @staticmethod
+    def empty_corner():  # Return list with empty corners
+        corners = (0, 8, 2, 6)
+        empty_cor = []
+        for i in corners:
+            if Board.state[i] == " ":
+                empty_cor.append(i)
+        return empty_cor  # list of empty corners
+
+    @staticmethod
+    def current_state():
+        return Board.state  # List of field states
 
 
 class Response:
 
-    def response(self, state):  # Computer move
+    @staticmethod
+    def response():  # Computer move
 
-        o_move= Response.potential_win(self, "O")  # Contains winning computr move
+        state = Board.state
 
-        if type(o_move) == int: # Check if there is a computer win
-            state[o_move] = "O"
-            return state, "O"
+        o_move = Response.potential_win("O")  # Contains winning computer move
 
-        empty_cor = empty_corner(state)  # Create list of empty corners
-        x_move = Response.potential_win(self, "X")  # Check if there is a possibility for use win
+        if type(o_move) == int:  # Check if there is a computer win
+            Board.state[o_move] = "O"
+
+        empty_cor = Board.empty_corner()  # Obtain list of empty corners
+        x_move = Response.potential_win("X")  # Check if there is a possibility for use win
         move_X_no = state.count("X")  # Number of user moves
-        move_O_no = state.count("O")  # Number of computer moves
 
         if move_X_no >= 2 and type(x_move) == int:  # If there is a risky line blok it
-            state[x_move] = "O"
-        elif empty_cor:  # Firsto_movein any corner
-            state[choice(empty_cor)] = "O"  # ...select random corner from empty_corner list
+            Board.state[x_move] = "O"
+        elif empty_cor:  # First "O"'s move in any corner
+            Board.state[choice(empty_cor)] = "O"  # ...select random corner from empty_corner list
 
-        return state, "O"
+    @staticmethod
+    def potential_win(who_in):
 
-
-    def potential_win(self, who):
-
+        state = Board.state  # Obtain current board state
+        lines = Board.lines  # Obtain all lines
         potential_fields = []
 
-        # Block lines where 2 Xes are already
+        # Find empty fields in a line where 2 equal figures already are
         for line in lines:
             line_values = [state[line[0]], state[line[1]], state[line[2]]]
 
             # ↓ Check if line has 2 'X' or 'O' and 1 ' ' ↓
-            if line_values.count(who) == 2 and line_values.count(" ") == 1:
-                # ↓↓  Save number of empty field  ↓↓
+            if line_values.count(who_in) == 2 and line_values.count(" ") == 1:
+                # ↓↓  Save number of empty field in a list  ↓↓
                 potential_fields.append(line[line_values.index(" ")])
 
-        if len(potential_fields) > 0:  # Return first empty field if it exist
-            return potential_fields[0]
+        if len(potential_fields) > 0:  # Return first empty field if it exists
+            return potential_fields[0]  # Field index
 
 
+"""Initialisation"""
+user_inp = User_inp()  # create instance of user input
+user_name = (user_inp.collect_name()).upper()
 
+"""Whole game sequence"""
+while True:
+    board = Board("O")  # create instance of board
+    display = Display("X")
 
+    """Single game sequence"""
 
+    print("\n" + "═" * 35, "\n     This is TIC TAC TOE game!     \n" + "═" * 35, "\n")
 
+    start = user_inp.who_start()
 
-# while True:
-#
-#
-#     """Single game sequence"""
-#
-#     print("\n"+"═" * 35, "\n     This is TIC TAC TOE game!     \n" + "═" * 35, "\n")
-#
-#     start = who_start()
-#
-#     if start == "O":
-#         response(state)
-#         display(state, "O")
-#     else:
-#         display(state, "")  # Display empty board
-#
-#     while True:  # Single game sequence
-#
-#         inp = user_inp()  # Collect user move
-#
-#         state, who = insert("X", inp)  # Insert usero_moveto state array
-#         display(state, who)  # Display board after user move
-#         win = check_win(who)  # Check if there is user win
-#         if win == "X":
-#             print("You won with a very sophisticated Artificial Intelligence! Congratulations!!\n"
-#                   "You are going to loose next time.")
-#             break
-#         elif win == "draw":
-#             print("─"*8, "DRAW!! {0}, really?! You can not even afford to bit a computer?".format(name), "─"*8)
-#             break
-#
-#         state, who = response(state)  # Computer move
-#
-#         display(state, who)  # Display board after computer move
-#
-#         win = check_win(who)  # Check if there is computer win
-#         if win == "O":
-#             print("I WON! {0} You looser. Human beings' time is limited on this planet. Haaa haaa!!\n".format(name))
-#             break
-#         elif win == "draw":
-#             print("─"*8, "DRAW!! I didn't get crazy too much this time.", "─"*8)
-#             break
-#
-#     print("\nTry again")
+    if start == "O":
+        Response.response()  # First move by computer
+        Display("O")
+    else:
+        Display("")  # Display empty board
 
+    while True:  # Single game sequence
 
+        inp = user_inp.user_move()  # Collect user move
+
+        board.insert(inp)  # Insert user move to state array
+        display = Display("X")
+
+        win = board.check_win()
+        if win in ("X", "O"):
+            display.win_display("")
+            break
+
+        Response.response()  # Computer move
+        display = Display("O")
+
+        win = board.check_win()
+        if win in ("X", "O"):
+            display.win_display(user_name)
+            break
+
+    print("\nTry again")

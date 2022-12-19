@@ -107,7 +107,6 @@ while True:
         empty_cor = empty_corner(state)  # Create list of empty corners
         x_move = potential_win("X")  # Check if there is a possibility for use win
         move_X_no = state.count("X")  # Number of user moves
-        move_O_no = state.count("O")  # Number of computer moves
 
         if move_X_no >= 2 and type(x_move) == int:  # If there is a risky line blok it
             state[x_move] = "O"
@@ -150,7 +149,7 @@ while True:
 
         inp = user_inp()  # Collect user move
 
-        state, who = insert("X", inp)  # Insert usero_moveto state array
+        state, who = insert("X", inp)  # Insert user move to state array
         display(state, who)  # Display board after user move
         win = check_win(who)  # Check if there is user win
         if win == "X":
