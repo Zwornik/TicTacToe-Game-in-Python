@@ -16,8 +16,6 @@ from random import choice
       'O' - Computer figure
 """
 
-who = "X"  # Contain info about recent player
-
 
 class Display:
 
@@ -176,7 +174,6 @@ class Response:
                 potential_fields.append(line[line_values.index(" ")])
 
         if len(potential_fields) > 0:  # Return first empty field if it exists
-            print(potential_fields)
             return potential_fields[0]  # Field index
 
 
@@ -186,7 +183,8 @@ user_inp = User_inp()  # create instance of user input
 user_name = (user_inp.collect_name()).upper()
 game_counter = 0  # Keeps no. of games
 score = [0, 0]  # Keeps score of all rounds ["X", "O"]
-game_starts = [0, 0]  # No. of rounds started by each player ["X", "O"]
+game_start = [0, 0]  # No. of rounds started by each player ["X", "O"]
+
 """WHOLE GAME SEQUENCE"""
 
 while True:
@@ -203,12 +201,11 @@ while True:
     if start == "O":
         Response.response()  # First move by computer
         Display("O")  # Display computer move
-        game_starts[1] += 1
+        game_start[1] += 1
     else:
-        game_starts[0] += 1
+        game_start[0] += 1
 
-
-    while True:  # Single game sequence
+    while True:
 
         """USER MOVE"""
         inp = user_inp.user_move()  # Collect user move e.g. "A2"
@@ -217,7 +214,6 @@ while True:
         display = Display("X")
 
         win = board.check_win()
-        print("WIN", win)
         if win:
             display.win_message(user_name)
             board.reset_board()
@@ -241,7 +237,7 @@ while True:
     print("We have played {} rounds and the current result is:".format(game_counter))
     print("           {0:^15}  {1:^15}".format(user_name, "COMPUTER"))
     print("Wins       {0:^15}  {1:^15}".format(score[0], score[1]))
-    print("Starts game{0:^15}  {1:^15}\n".format(game_starts[0], game_starts[1]))
+    print("Starts game{0:^15}  {1:^15}\n".format(game_start[0], game_start[1]))
 
     while not input("Press Enter to continue."):
         break

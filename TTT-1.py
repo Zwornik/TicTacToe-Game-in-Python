@@ -20,7 +20,9 @@ from random import choice
 name = input("Please enter your name. ").upper()
 field_coords = ("A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of files where index is field number
 lines = ((0, 1, 2), (3,4,5), (6,7,8), (0,3,6), (1,4,7), (2,5,8), (0,4,8), (2,4,6))  # All possible lines
-
+game_counter = 0  # Keeps no. of games
+score = [0, 0]  # Keeps score of all rounds ["X", "O"]
+game_start = [0, 0]  # No. of rounds started by each player ["X", "O"]
 
 """WHOLE GAME SEQUENCE"""
 
@@ -142,15 +144,18 @@ while True:
 
     print("\n"+"═" * 35, "\n     This is TIC TAC TOE game!     \n" + "═" * 35, "\n")
 
-    start = who_start()
+    game_counter += 1  # Keeps no. of rounds played already
+    start = who_start()  # User choice of who start the game
 
     if start == "O":
-        response(state)
-        display(state, "O")
+        response(state)  # First move by computer
+        display(state, "O")  # Display computer move
+        game_start[1] += 1
     else:
-        display(state, "")  # Display empty board
+        game_start[0] += 1
 
-    while True:  # Single game sequence
+
+    while True:
 
         """USER MOVE"""
 
@@ -162,6 +167,7 @@ while True:
         if win == "X":
             print("You won with a very sophisticated Artificial Intelligence! Congratulations!!\n"
                   "You are going to loose next time.")
+            score[0] += 1
             break
         elif win == "draw":
             print("─"*8, "DRAW!! {0}, really?! You can not even afford to bit a computer?".format(name), "─"*8)
@@ -176,10 +182,17 @@ while True:
         win = check_win(who)  # Check if there is computer win
         if win == "O":
             print("I WON! {0} You looser. Human beings' time is limited on this planet. Haaa haaa!!\n".format(name))
+            score[1] += 1
             break
         elif win == "draw":
             print("─"*8, "DRAW!! I didn't get crazy too much this time.", "─"*8)
             break
+
+    print("\nTry again\n")
+    print("We have played {} rounds and the current result is:".format(game_counter))
+    print("           {0:^15}  {1:^15}".format(name, "COMPUTER"))
+    print("Wins       {0:^15}  {1:^15}".format(score[0], score[1]))
+    print("Starts game{0:^15}  {1:^15}\n".format(game_start[0], game_start[1]))
 
     print("\nTry again")
 
