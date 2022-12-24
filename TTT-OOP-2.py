@@ -119,7 +119,8 @@ class Board:
 
         if self.state.count(" ") == 0 and not x_or_o():  # Check if there is a 'draw'.
             return "draw"
-        x_or_o()
+        else:
+            return x_or_o()
 
     def insert(self, coodrs, who):  # Insert figure to a filed
         self.state[self.FIELD_COORDS.index(coodrs)] = who
@@ -167,40 +168,63 @@ class Response:
             data = Counter(temp)  # Find the most common field index in 'temp'
             state[(data.most_common(1)[0][0])] = "O"
 
-        def two_fiels():  # Check "O" in the corner neighbors with "X" is in center of outer lines
+        def two_fields():  # Check if "O" in the corner neighbors with "X" is in center of outer lines
             outer_lines = [lines[0], lines[2], lines[3], lines[5], ]
             for line in outer_lines:
-                if line[1] == "X" and (line[0] == "O" and line[2] == " " or line[0] == " " and line[2] == "X"):
-                    state[4] = "O"
+                if line[1] == "X" and line[0] == "O" and line[2] == " " or line[0] == " " and line[2] == "X":
+                    return True
+                else:
+                    return False
+
 
         """Check if "O" wins now"""
         if type(o_move) == int:  # Check if there is a computer win
             state[o_move] = "O"
+            print(0)
             return
 
         """Next move"""
         empty_cor = board.empty_corner()  # Obtain list of empty corners
         x_move = Response.potential_win("X", state)  # Check if there is a possibility for use win
         move_X_no = state.count("X")  # Number of user moves
+
         if move_X_no >= 2 and type(x_move) == int:  # If there is a risky line blok it
             state[x_move] = "O"
             print(1)
-
-        elif move_X_no <= 1 and empty_cor:  # First "O"'s move in any corner
-            state[choice(empty_cor)] = "O"  # ...select random corner from empty_corner list
-            print(3)
-
-        elif move_X_no == 1 and two_fiels():
-            print(2)
             return
 
-        elif state.count(" ") == 1:  # The last move
+        elif move_X_no == 1 and state.index("X") in (1, 3, 5, 7):  # if "X" in center of outer line
+            print(3)
+            state[4] = "O"  # ...put "O" in the center
+            return
+
+        elif move_X_no <= 1 and empty_cor:  # "O"'s first move in any corner and 2nd move in an opposite corner
+            if state[4] == "O":
+                for t in ([0, 8], [2, 6]):
+                    print(t)
+                    for i in range(2):
+                        print(i)
+                        if state[t[i]] == "O":
+                            print(state.index("O")-1)
+                            state[t[i - 1]] = "O"
+                            return
+            else:
+                state[choice(empty_cor)] = "O"  # put "O" in random corner from empty_corner list
+                print(22)
+                return
+
+
+
+
+        elif state.count(" ") == 1:  # The last move in empty field
             state[state.index(" ")] = "O"
             print(4)
             return
 
         else:
             two_lines()
+            print(5)
+            return
 
     @staticmethod
     def potential_win(who_in, state):
@@ -218,7 +242,7 @@ class Response:
                 potential_fields.append(line[line_values.index(" ")])
 
         if len(potential_fields) > 0:  # Return first empty field if it exists
-            print(potential_fields)
+            print("potential_fields", potential_fields)
             return potential_fields[0]  # Field index
 
 
