@@ -163,9 +163,10 @@ class Response:
                 if line_values.count("O") == 1 and line_values.count(" ") == 2:  # ...if line has 1x "O" and 2x " "...
                     for i in line:
                         print(line)
-                        if state[i] == " ":  # ...index of each empty field to the 'temp' list.
+                        if state[i] == " ":  # ...add index of each empty field to the 'temp' list.
                             temp.append(i)
             data = Counter(temp)  # Find the most common field index in 'temp'
+            print(temp, data)
             state[(data.most_common(1)[0][0])] = "O"
 
         def two_fields():  # Check if "O" in the corner neighbors with "X" is in center of outer lines
@@ -199,12 +200,12 @@ class Response:
             return
 
         elif move_X_no <= 1 and empty_cor:  # "O"'s first move in any corner and 2nd move in an opposite corner
-            if state[4] == "O":
-                for t in ([0, 8], [2, 6]):
+            if state[4] == "O":  # if "O" in center field
+                for t in ([0, 8], [2, 6]):  # check corners in two diagonal lines
                     print(t)
                     for i in range(2):
                         print(i)
-                        if state[t[i]] == "O":
+                        if state[t[i]] == "O":  # put "O" to opposite corner if other has "O" already
                             print(state.index("O")-1)
                             state[t[i - 1]] = "O"
                             return
@@ -213,17 +214,18 @@ class Response:
                 print(22)
                 return
 
-
-
-
         elif state.count(" ") == 1:  # The last move in empty field
             state[state.index(" ")] = "O"
             print(4)
             return
 
+        elif state.count(" ") == 2:
+            state[state.index(" ")] = "O"
+            print(5)
+
         else:
             two_lines()
-            print(5)
+            print(6)
             return
 
     @staticmethod
