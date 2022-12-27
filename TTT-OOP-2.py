@@ -58,7 +58,7 @@ class Display:
             print("─" * 8, "DRAW!! {}, really?! You can not even afford to bit a computer?".format(name), "─" * 8)
 
 
-class User_inp:
+class User_input:
     def __init__(self):
         self.board = Board()
 
@@ -146,24 +146,22 @@ class Response:
         state = board.state
         o_move = Response.potential_win("O", state)  # Contains winning computer move
 
-        def two_lines():  # Find empty field where adding "O" would create 2 lines of 2x "O" and 1x " "
-            temp = []
+        def two_lines(who):  # Find empty field where adding "O" would create 2 lines of 2x "O" and 1x " ". It does
+                            # the same for "X" in recurrent run if there is no two lines for "O".
+            empty = []
             for line in lines:  # Check each line...
                 line_values = [state[line[0]], state[line[1]], state[line[2]]]
-                if line_values.count("O") == 1 and line_values.count(" ") == 2:  # ...if line has 1x "O" and 2x " "...
+                if line_values.count(who) == 1 and line_values.count(" ") == 2:  # ...if line has 1x "O" and 2x " "...
                     for i in line:
-                        if state[i] == " ":  # ...add index of each empty field to the 'temp' list.
-                            temp.append(i)
-            data = Counter(temp)  # Find the most common field index in 'temp'
-            state[(data.most_common(1)[0][0])] = "O"
-
-        def two_fields():  # Check if "O" in the corner neighbors with "X" is in center of outer lines
-            outer_lines = [lines[0], lines[2], lines[3], lines[5], ]
-            for line in outer_lines:
-                if line[1] == "X" and line[0] == "O" and line[2] == " " or line[0] == " " and line[2] == "X":
-                    return True
-                else:
-                    return False
+                        if state[i] == " ":  # ...add index of each empty field to the 'empty' list.
+                            empty.append(i)
+            empty_indexes = Counter(empty)  # Find the most common field index in 'empty'
+            print(empty_indexes)
+            if not all(val == 1 for val in empty_indexes.values()):  # If there is empty field appearing more than 1...
+                state[(empty_indexes.most_common(1)[0][0])] = "O"  # ...put "O" there
+            else:
+                two_lines("X")
+                return
 
         """Check if "O" wins now"""
         if type(o_move) == int:  # Check if there is a computer win
@@ -212,7 +210,7 @@ class Response:
             print(6)
 
         else:
-            two_lines()
+            two_lines("O")
             print(7)
             return
 
@@ -236,10 +234,9 @@ class Response:
 
 
 def main():
-
     """INITIALISATION"""
 
-    user_name = (User_inp().collect_name()).upper()
+    user_name = (User_input().collect_name()).upper()
     game_counter = 0  # Keeps no. of games
     score = [0, 0, 0]  # Keeps score of all rounds ["X", "O"]
     game_start = [0, 0]  # No. of rounds started by each player ["X", "O"]
@@ -248,15 +245,26 @@ def main():
 
     while True:
         board = Board()  # create instance of board
-        user_inp = User_inp()  # create instance of user input
+        user_input = User_input()  # create instance of user input
         display = Display("", board)
         game_counter += 1
+
+        def win_display(win):
+            display.win_message(user_name, win)
+            board.reset_board()
+            if win:
+                if win == "X":
+                    score[0] += 1
+                elif win == "O":
+                    score[1] += 1
+                elif win == "draw":
+                    score[2] += 1
 
         """SINGLE GAME SEQUENCE"""
 
         print("\n" + "═" * 35, "\n     This is TIC TAC TOE game!     \n" + "═" * 35, "\n")
 
-        start = user_inp.who_start()
+        start = user_input.who_start()
 
         if start == "O":
             Response.response(board)  # First move by computer
@@ -268,33 +276,23 @@ def main():
         while True:
 
             """USER MOVE"""
-            inp = user_inp.user_move()  # Collect user move e.g. "A2"
+            move = user_input.user_move()  # Collect user move e.g. "A2"
 
-            board.insert(inp, "X")  # Insert user move to state array
+            board.insert(move, "X")  # Insert user move to state array
             display = Display("X", board)
 
             win = board.check_win()
             if win:
-                display.win_message(user_name, win)
-                board.reset_board()
-                if win == "X":
-                    score[0] += 1
-                elif win == "draw":
-                    score[2] += 1
+                win_display(win)
                 break
 
             """COMP MOVE"""
             Response.response(board)  # Computer move
 
-            win = board.check_win()
             display = Display("O", board)
+            win = board.check_win()
             if win:
-                display.win_message(user_name, win)
-                board.reset_board()
-                if win == "O":
-                    score[1] += 1
-                elif win == "draw":
-                    score[2] += 1
+                win_display(win)
                 break
 
         print("We have played {} rounds and the current result is:".format(game_counter))
