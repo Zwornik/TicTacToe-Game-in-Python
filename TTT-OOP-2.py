@@ -45,7 +45,6 @@ class Display:
         print("      ╟───┼───┼───╢")
         print("    3 ║ {0[2]:^{1}} │ {0[5]:^{1}} │ {0[8]:^{1}} ║".format(self.board.state, 1))
         print("      ╚═══╧═══╧═══╝")
-        print("STATE =", Board.STATE)
 
     def win_message(self, name, win):  # Display a message about the winner
         if win == "X":
@@ -62,7 +61,6 @@ class Display:
 class User_inp:
     def __init__(self):
         self.board = Board()
-        print("init w user-inp")
 
     @staticmethod
     def collect_name():
@@ -94,7 +92,6 @@ class User_inp:
 
 class Board:
     STATE = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps initial game state
-    print("STATE1", STATE)
     FIELD_COORDS = (
             "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of fields where index is field number
     LINES = (
@@ -102,12 +99,8 @@ class Board:
             (2, 4, 6))  # All possible LINES
 
     def __init__(self):
-        print("INIT")
-        print("STATE2", Board.STATE)
         self.state = Board.STATE
-        print(self.state)
-        print("STATE3", Board.STATE)
-        
+
     def check_win(self):  # Check if there is a win (row of 3) or draw.
 
         def x_or_o():
@@ -126,7 +119,6 @@ class Board:
         self.state[self.FIELD_COORDS.index(coodrs)] = who
 
     def check_field(self, coodrs):  # Return value of selected field
-        print("check", self.state)
         field = self.state[self.FIELD_COORDS.index(coodrs)]
         return field  # "X" or "O" or " "
 
@@ -142,10 +134,8 @@ class Board:
         return self.state  # List of field states
 
     def reset_board(self):
-        print("DUPA")
         Board.STATE = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
         self.state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
-        print(self.state)
 
 
 class Response:
@@ -162,11 +152,9 @@ class Response:
                 line_values = [state[line[0]], state[line[1]], state[line[2]]]
                 if line_values.count("O") == 1 and line_values.count(" ") == 2:  # ...if line has 1x "O" and 2x " "...
                     for i in line:
-                        print(line)
                         if state[i] == " ":  # ...add index of each empty field to the 'temp' list.
                             temp.append(i)
             data = Counter(temp)  # Find the most common field index in 'temp'
-            print(temp, data)
             state[(data.most_common(1)[0][0])] = "O"
 
         def two_fields():  # Check if "O" in the corner neighbors with "X" is in center of outer lines
@@ -177,11 +165,9 @@ class Response:
                 else:
                     return False
 
-
         """Check if "O" wins now"""
         if type(o_move) == int:  # Check if there is a computer win
             state[o_move] = "O"
-            print(0)
             return
 
         """Next move"""
@@ -194,38 +180,40 @@ class Response:
             print(1)
             return
 
-        elif move_X_no == 1 and state.index("X") in (1, 3, 5, 7):  # if "X" in center of outer line
-            print(3)
+        elif move_X_no == 1 and state.index("X") in (1, 3, 5, 7):  # if "X" in a center of the outer line...
             state[4] = "O"  # ...put "O" in the center
+            print(2)
             return
 
         elif move_X_no <= 1 and empty_cor:  # "O"'s first move in any corner and 2nd move in an opposite corner
-            if state[4] == "O":  # if "O" in center field
-                for t in ([0, 8], [2, 6]):  # check corners in two diagonal lines
-                    print(t)
+            print(555)
+            if state[4] in ("O", "X"):  # if "O" in center field
+                print(444)
+                for diagonal in ([0, 8], [2, 6]):  # check corners in two diagonal lines
                     for i in range(2):
-                        print(i)
-                        if state[t[i]] == "O":  # put "O" to opposite corner if other has "O" already
-                            print(state.index("O")-1)
-                            state[t[i - 1]] = "O"
+                        if state[diagonal[i]] in ("O", "X"):  # put "O" to opposite corner if other has "O" already
+                            state[diagonal[i - 1]] = "O"
+                            print(3)
                             return
-            else:
                 state[choice(empty_cor)] = "O"  # put "O" in random corner from empty_corner list
-                print(22)
+                print(4)
                 return
-
-        elif state.count(" ") == 1:  # The last move in empty field
-            state[state.index(" ")] = "O"
+            state[choice(empty_cor)] = "O"  # put "O" in random corner from empty_corner list
             print(4)
             return
 
-        elif state.count(" ") == 2:
+        elif state.count(" ") == 1:  # The last move in empty field
             state[state.index(" ")] = "O"
             print(5)
+            return
+
+        elif state.count(" ") == 2:  # Penultimate move
+            state[state.index(" ")] = "O"
+            print(6)
 
         else:
             two_lines()
-            print(6)
+            print(7)
             return
 
     @staticmethod
@@ -244,7 +232,6 @@ class Response:
                 potential_fields.append(line[line_values.index(" ")])
 
         if len(potential_fields) > 0:  # Return first empty field if it exists
-            print("potential_fields", potential_fields)
             return potential_fields[0]  # Field index
 
 
@@ -254,13 +241,12 @@ def main():
 
     user_name = (User_inp().collect_name()).upper()
     game_counter = 0  # Keeps no. of games
-    score = [0, 0]  # Keeps score of all rounds ["X", "O"]
+    score = [0, 0, 0]  # Keeps score of all rounds ["X", "O"]
     game_start = [0, 0]  # No. of rounds started by each player ["X", "O"]
 
     """WHOLE GAME SEQUENCE"""
 
     while True:
-        print("NEW")
         board = Board()  # create instance of board
         user_inp = User_inp()  # create instance of user input
         display = Display("", board)
@@ -288,31 +274,32 @@ def main():
             display = Display("X", board)
 
             win = board.check_win()
-            print("WIN", win)
             if win:
                 display.win_message(user_name, win)
                 board.reset_board()
                 if win == "X":
                     score[0] += 1
+                elif win == "draw":
+                    score[2] += 1
                 break
 
             """COMP MOVE"""
             Response.response(board)  # Computer move
 
             win = board.check_win()
-            print("WIN", win)
             display = Display("O", board)
             if win:
                 display.win_message(user_name, win)
                 board.reset_board()
                 if win == "O":
                     score[1] += 1
+                elif win == "draw":
+                    score[2] += 1
                 break
 
-        print("\nTry again!\n")
         print("We have played {} rounds and the current result is:".format(game_counter))
-        print("           {0:^15}  {1:^15}".format(user_name, "COMPUTER"))
-        print("Wins       {0:^15}  {1:^15}".format(score[0], score[1]))
+        print("           {0:^15}  {1:^15}  {2:^15}".format(user_name, "COMPUTER", "DRAW"))
+        print("Wins       {0:^15}  {1:^15}  {2:^15}".format(score[0], score[1], score[2]))
         print("Starts game{0:^15}  {1:^15}\n".format(game_start[0], game_start[1]))
 
         while not input("Press Enter to continue."):
