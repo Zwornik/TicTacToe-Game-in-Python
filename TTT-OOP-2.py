@@ -146,10 +146,10 @@ class Response:
         state = board.state
         o_move = Response.potential_win("O", state)  # Contains winning computer move
 
-        def two_lines(who, level, changed):  # Find empty field where adding "O" would create 2 lines of 2x "O" and
+        def two_lines(who, level):  # Find empty field where adding "O" would create 2 lines of 2x "O" and
                         # 1x " ". It does the same for "X" in recurrent run if there is no two lines for "O".
             empty = []  # Contain list of empty fields with potential to create a line.
-            level += 1
+            level += 1  # Recursion level
             for line in lines:  # Check each line...
                 line_values = [state[line[0]], state[line[1]], state[line[2]]]
                 if line_values.count(who) == 1 and line_values.count(" ") == 2:  # ...if line has 1x "O" and 2x " "...
@@ -160,14 +160,13 @@ class Response:
             print(level, empty_indexes)
             if not all(val == 1 for val in empty_indexes.values()):  # If there is empty field appearing more than 1...
                 state[(empty_indexes.most_common(1)[0][0])] = "O"  # ...put "O" there
-                changed = True
-                print("222", changed)
-                return changed
+                print("222")
+                return True  # True if state was modified by this function
             elif level == 2:  # Return in recursion level is 2
-                print("111", changed)
-                return False
+                print("111")
+                return False  # True if state was NOT modified by this function
             print("recursion")
-            two_lines("X", level, changed)  # Recursive check for "X"
+            two_lines("X", level)  # Recursive check for "X"
 
         """Check if "O" wins now"""
         if type(o_move) == int:  # Check if there is a computer win
@@ -217,7 +216,7 @@ class Response:
             return
 
         else:
-            two = two_lines("O", 0, False)
+            two = two_lines("O", 0)
             print(7777, two)
             if two != True:
                 state[state.index(" ")] = "O"
