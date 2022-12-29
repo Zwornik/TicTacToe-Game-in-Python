@@ -1,23 +1,23 @@
-"""GAME TIC TAC TOE"""
+"""GAME TIC TAC TOE
 
-"""Fields numbering
-       A   B   C  
-      ╔═══╤═══╤═══╗
-    1 ║ O │ 3 │ 6 ║
-      ╟───┼───┼───╢
-    2 ║ 1 │ 4 │ 7 ║
-      ╟───┼───┼───╢
-    3 ║ 2 │ 5 │ 8 ║
-      ╚═══╧═══╧═══╝
+Fields numbering
+   A   B   C
+  ╔═══╤═══╤═══╗
+1 ║ O │ 3 │ 6 ║
+  ╟───┼───┼───╢
+2 ║ 1 │ 4 │ 7 ║
+  ╟───┼───┼───╢
+3 ║ 2 │ 5 │ 8 ║
+  ╚═══╧═══╧═══╝
 
-      'X' - User figure
-      'O' - Computer figure"""
+'X' - User figure
+'O' - Computer figure"""
 
 
 class Board:
     STATE = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps initial game state
     FIELD_COORDS = (
-            "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of fields where index is field number
+            "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of fields where index is a field number
     LINES = (
             (0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8),
             (2, 4, 6))  # All possible LINES

@@ -30,7 +30,7 @@ while True:
     state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]  # Keeps current game state
     who = ""  # Contain info about recent player
 
-    def display(state, who):  # Display game result
+    def display(state, who):  # BoardPrinter game result
 
         if who == "X":
             who = "◀   This is your move."
@@ -149,7 +149,7 @@ while True:
 
     if start == "O":
         response(state)  # First move by computer
-        display(state, "O")  # Display computer move
+        display(state, "O")  # BoardPrinter computer move
         game_start[1] += 1
     else:
         game_start[0] += 1
@@ -162,7 +162,7 @@ while True:
         inp = user_inp()  # Collect user move
 
         state, who = insert("X", inp)  # Insert user move to state array
-        display(state, who)  # Display board after user move
+        display(state, who)  # BoardPrinter board after user move
         win = check_win(who)  # Check if there is user win
         if win == "X":
             print("You won with a very sophisticated Artificial Intelligence! Congratulations!!\n"
@@ -177,7 +177,7 @@ while True:
 
         state, who = response(state)  # Computer move
 
-        display(state, who)  # Display board after computer move
+        display(state, who)  # BoardPrinter board after computer move
 
         win = check_win(who)  # Check if there is computer win
         if win == "O":

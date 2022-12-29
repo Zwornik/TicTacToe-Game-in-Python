@@ -1,8 +1,9 @@
 
 from utils import collect_name, who_start, user_move
-from display import Display
+from display import BoardPrinter, Messenger
 from board import Board
 from response import Response
+
 
 """GAME TIC TAC TOE"""
 
@@ -23,8 +24,8 @@ from response import Response
 
 def main():
     """INITIALISATION"""
-
     user_name = (collect_name()).upper()
+    message = Messenger("", user_name)
     game_counter = 0  # Keeps no. of games
     score = [0, 0, 0]  # Keeps score of all rounds ["X", "O", DRAWS]
     game_start = [0, 0]  # No. of rounds started by each player ["X", "O"]
@@ -33,11 +34,13 @@ def main():
 
     while True:
         board = Board()  # create instance of board
-        display = Display("", board, user_name)
+        display = BoardPrinter("", board)
+        display.display_board()
         game_counter += 1
 
         def win_score(win):
-            display.win_message()
+            message.who = win
+            message.win_message()
             if win:
                 if win == "X":
                     score[0] += 1
@@ -54,7 +57,9 @@ def main():
 
         if start == "O":
             Response.response(board)  # First move by computer
-            Display("O", board, user_name)  # Display computer move
+            display.who = "O"
+            display.board = board
+            display.display_board()  # Display empty board
             game_start[1] += 1
         else:
             game_start[0] += 1
@@ -65,7 +70,10 @@ def main():
             move = user_move()  # Collect user move e.g. "A2"
 
             board.insert(move, "X")  # Insert user move to state array
-            display = Display("X", board, user_name)
+
+            display.who = "X"
+            display.board = board
+            display.display_board()  # Display board with user move
 
             win = board.check_win()
             if win:
@@ -76,7 +84,10 @@ def main():
             """COMP MOVE"""
             Response.response(board)  # Computer move
 
-            display = Display("O", board, user_name)
+            display.who = "O"
+            display.board = board
+            display.display_board()  # Display  board with computer move
+
             win = board.check_win()
             if win:
                 win_score(win)

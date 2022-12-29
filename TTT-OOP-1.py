@@ -39,7 +39,7 @@ class Display:
         print("    3 ║ {0[2]:^{1}} │ {0[5]:^{1}} │ {0[8]:^{1}} ║".format(self.state, 1))
         print("      ╚═══╧═══╧═══╝\n")
 
-    def win_message(self, name):  # Display a message about the winner
+    def win_message(self, name):  # BoardPrinter a message about the winner
         if self.who == "X":
             print("You won with a very sophisticated Artificial Intelligence! Congratulations!!\n"
                   "You are going to loose next time.")
@@ -200,7 +200,7 @@ while True:
 
     if start == "O":
         Response.response()  # First move by computer
-        Display("O")  # Display computer move
+        Display("O")  # BoardPrinter computer move
         game_start[1] += 1
     else:
         game_start[0] += 1

@@ -1,10 +1,9 @@
-class Display:
 
-    def __init__(self, last_move, board, name):
+class BoardPrinter:
+
+    def __init__(self, last_move, board):
         self.board = board
         self.who = last_move
-        self.name = name
-        self.display_board()
 
     def display_board(self):
 
@@ -24,7 +23,13 @@ class Display:
         print("    3 ║ {0[2]:^{1}} │ {0[5]:^{1}} │ {0[8]:^{1}} ║".format(self.board.state, 1))
         print("      ╚═══╧═══╧═══╝")
 
-    def win_message(self):  # Display a message about the winner
+
+class Messenger:
+    def __init__(self, who, name):
+        self.who = who
+        self.name = name
+
+    def win_message(self):  # BoardPrinter a message about the winner
         if self.who == "X":
             print("Congratulations {}! You won with a very sophisticated Artificial Intelligence!\n"
                   "You are going to loose next time.".format(self.name))
