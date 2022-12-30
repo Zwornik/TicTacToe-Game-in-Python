@@ -1,4 +1,3 @@
-
 from utils import collect_name, who_start, user_move
 from display import BoardPrinter, Messenger
 from board import Board
@@ -25,7 +24,7 @@ from response import Response
 def main():
     """INITIALISATION"""
     user_name = (collect_name()).upper()
-    message = Messenger("", user_name)
+    message = Messenger(user_name)
     game_counter = 0  # Keeps no. of games
     score = [0, 0, 0]  # Keeps score of all rounds ["X", "O", DRAWS]
     game_start = [0, 0]  # No. of rounds started by each player ["X", "O"]
@@ -34,13 +33,13 @@ def main():
 
     while True:
         board = Board()  # create instance of board
-        display = BoardPrinter("", board)
-        display.display_board()
+        display = BoardPrinter(board)
+        answer = Response(board)
+        display.display_board("")
         game_counter += 1
 
         def win_score(win):
-            message.who = win
-            message.win_message()
+            message.win_message(win)
             if win:
                 if win == "X":
                     score[0] += 1
@@ -56,10 +55,10 @@ def main():
         start = who_start()
 
         if start == "O":
-            Response.response(board)  # First move by computer
-            display.who = "O"
-            display.board = board
-            display.display_board()  # Display empty board
+            answer.response()  # First move by computer
+            # display.who = "O"
+            # display.board = board
+            display.display_board("O")  # Display empty board
             game_start[1] += 1
         else:
             game_start[0] += 1
@@ -67,13 +66,13 @@ def main():
         while True:
 
             """USER MOVE"""
-            move = user_move()  # Collect user move e.g. "A2"
+            move = user_move(board)  # Collect user move e.g. "A2"
 
             board.insert(move, "X")  # Insert user move to state array
 
-            display.who = "X"
-            display.board = board
-            display.display_board()  # Display board with user move
+            # display.who = "X"
+            # display.board = board
+            display.display_board("X")  # Display board with user move
 
             win = board.check_win()
             if win:
@@ -82,11 +81,11 @@ def main():
                 break
 
             """COMP MOVE"""
-            Response.response(board)  # Computer move
+            answer.response()  # Computer move
 
-            display.who = "O"
-            display.board = board
-            display.display_board()  # Display  board with computer move
+            # display.who = "O"
+            # display.board = board
+            display.display_board("O")  # Display  board with computer move
 
             win = board.check_win()
             if win:

@@ -16,8 +16,7 @@ def who_start():  # Make User to chose who starts a game 'x' or 'o'
             return start  # "O" or "X"
 
 
-def user_move():  # Collect user move
-    board = Board()
+def user_move(board):  # Collect user move
     while True:
         move = input("Type field coordinates to put your 'X' (e.g. 'A2') ")
         move = move.upper()

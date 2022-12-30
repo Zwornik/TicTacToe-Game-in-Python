@@ -1,15 +1,14 @@
 
 class BoardPrinter:
 
-    def __init__(self, last_move, board):
+    def __init__(self, board):
         self.board = board
-        self.who = last_move
 
-    def display_board(self):
+    def display_board(self, who):
 
-        if self.who == "X":  # Select message to display
-            message = "◀◀◀  ( X )  This is your move. "
-        elif self.who == "O":
+        if who == "X":  # Select message to display
+            message = "◀◀◀  ( X )  This is your move."
+        elif who == "O":
             message = "◀◀◀  ( O )  This is my move."
         else:
             message = "◀◀◀  This is our empty board"
@@ -25,18 +24,17 @@ class BoardPrinter:
 
 
 class Messenger:
-    def __init__(self, who, name):
-        self.who = who
+    def __init__(self, name):
         self.name = name
 
-    def win_message(self):  # BoardPrinter a message about the winner
-        if self.who == "X":
+    def win_message(self, who):  # BoardPrinter a message about the winner
+        if who == "X":
             print("Congratulations {}! You won with a very sophisticated Artificial Intelligence!\n"
                   "You are going to loose next time.".format(self.name))
 
-        elif self.who == "O":
+        elif who == "O":
             print("I WON! {} You looser. Human beings' time is limited on this planet. Haaa haaa!!\n".format(self.name))
 
-        elif self.who == 'draw':
+        elif who == 'draw':
             print("─" * 8, "DRAW!! {}, really?! You can not even afford to bit a computer?".format(self.name), "─" * 8)
 

@@ -58,6 +58,6 @@ class Board:
         return self.state  # List of field states
 
     def reset_board(self):
-        Board.STATE = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
+        # Board.STATE = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
         self.state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
 
