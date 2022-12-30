@@ -23,8 +23,11 @@ class Board:
             (2, 4, 6))  # All possible LINES
 
     def __init__(self):
-        self.state = Board.STATE
+        self.state = self.set_board()
 
+    def set_board(self):
+        return Board.STATE.copy()
+    
     def check_win(self):  # Check if there is a win (row of 3) or draw.
 
         def x_or_o():
@@ -59,5 +62,5 @@ class Board:
 
     def reset_board(self):
         # Board.STATE = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
-        self.state = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
+        self.state = self.set_board()
 
