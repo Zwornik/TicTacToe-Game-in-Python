@@ -1,5 +1,3 @@
-from board import Board
-
 
 def collect_name():  # Collect User name
     name = input("Please enter your name. ").upper()

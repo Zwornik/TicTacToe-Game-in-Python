@@ -19,15 +19,17 @@ class Board:
     FIELD_COORDS = (
             "A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3")  # Coordinates of fields where index is a field number
     LINES = (
-            (0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (1, 4, 7), (2, 5, 8), (0, 4, 8),
+            (0, 1, 2), (2, 5, 8), (0, 3, 6), (6, 7, 8), (3, 4, 5), (1, 4, 7), (0, 4, 8),
             (2, 4, 6))  # All possible LINES
+    CORNERS = (0, 2, 6, 8)  # Indexes of corners
+    OUT_CENTERS = (1, 3, 5, 7)  # Centers of outer lines
 
     def __init__(self):
-        self.state = self.set_board()
+        self.state = Board.STATE.copy()
 
     def set_board(self):
         return Board.STATE.copy()
-    
+
     def check_win(self):  # Check if there is a win (row of 3) or draw.
 
         def x_or_o():
